@@ -17,7 +17,7 @@ namespace DbRefFinder {
 				}
 
 				if (++count % 10 == 0) {
-					Console.WriteLine($"{count}/{totalCount} processed ({count / totalCount}%)");
+					Console.WriteLine($"{count}/{totalCount} processed");
 				}
 
 				var referencingProcs = dbAccess.FindRefsFromStoredProcs(entity);
