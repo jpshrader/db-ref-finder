@@ -4,8 +4,8 @@ using System.Data.SqlClient;
 
 namespace DbRefFinder {
 	public class DbAccess {
-		private const string getAllTableNames = "SELECT [name] FROM sys.tables";
-		private const string getAllStoredProcNames = "SELECT [name] FROM dbo.sysobjects WHERE type = 'P'";
+		private const string getAllTableNames = "SELECT DISTINCT([name]) FROM sys.tables";
+		private const string getAllStoredProcNames = "SELECT DISTINCT([name]) FROM dbo.sysobjects WHERE type = 'P'";
 
 		private readonly string connectionString;
 
@@ -35,19 +35,24 @@ namespace DbRefFinder {
 		/// <param name="name">Name of table/proc you're checking</param>
 		/// <returns></returns>
 		public IEnumerable<string> FindRefsFromStoredProcs(string name) {
-			var sqlQuery = $@"SELECT Name FROM sys.procedures WHERE OBJECT_DEFINITION(OBJECT_ID) LIKE '%{name}%'";
+			var sqlQuery = $@"SELECT DISTINCT(Name) FROM sys.procedures WHERE OBJECT_DEFINITION(OBJECT_ID) LIKE '%{name}%'";
 
 			return Get(sqlQuery);
 		}
 
 		private IEnumerable<string> Get(string sqlQuery) {
-			using (var connection = new SqlConnection(connectionString)) {;
-				using (var command = new SqlCommand(sqlQuery, connection)) {
-					using (var reader = command.ExecuteReader()) {
-						while (reader.Read()) {
-							yield return reader.GetString(0);
+			using (var connection = new SqlConnection(connectionString)) {
+				try {
+					connection.Open();
+					using (var command = new SqlCommand(sqlQuery, connection)) {
+						using (var reader = command.ExecuteReader()) {
+							while (reader.Read()) {
+								yield return reader.GetString(0);
+							}
 						}
 					}
+				} finally {
+					connection.Close();
 				}
 			}
 		}

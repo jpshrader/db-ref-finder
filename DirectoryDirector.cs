@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace DbRefFinder {
 	public class DirectoryDirector {
 		public void Scour(string directoryPath, Dictionary<string, ReferenceList> referenceMap) {
-			foreach (var filePath in Directory.GetFiles(directoryPath)) {
+			var directoryFiles = Directory.GetFiles(directoryPath);
+			Console.WriteLine($"Processing: {directoryPath} ({directoryFiles.Length} files)");
+
+			foreach (var filePath in directoryFiles) {
 				ScourFile(filePath, referenceMap);
 			}
 

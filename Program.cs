@@ -16,7 +16,6 @@ namespace DbRefFinder {
 
 		public static void Main(string[] args) {
 			directoryToSearch = ConfigurationManager.AppSettings["DirectoryToSearch"].ToString();
-			Console.WriteLine($"Beginning search of: {directoryToSearch}");
 
 			var tableNames = dbAccess.GetTableNames();
 			AddToReferenceMap(tableNames, SqlObjectType.Table);
