@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 
 namespace DbRefFinder {
 	public class Program {
@@ -22,11 +23,13 @@ namespace DbRefFinder {
 			var storedProcNames = dbAccess.GetStoredProcNames();
 			AddToReferenceMap(storedProcNames, SqlObjectType.StoredProcedure);
 
+			Console.WriteLine("Processing Local Files...");
 			directoryDirector.Scour(directoryToSearch, sqlReferenceMap);
 			sqlProcInspector.Inspect(dbAccess, sqlReferenceMap);
 
 			var outputPath = WriteOutputFile(sqlReferenceMap);
 			Console.WriteLine($"File written to: {outputPath}");
+			Console.ReadKey();
 		}
 
 		private static void AddToReferenceMap(IEnumerable<string> sqlEntityNames, SqlObjectType systemType) {
@@ -39,14 +42,17 @@ namespace DbRefFinder {
 			var pathToFile = Path.Combine(Directory.GetCurrentDirectory(), "sql-references.txt");
 
 			using (var outputFile = new StreamWriter(pathToFile)) {
+				var itemsWithNoRefs = referenceMap.Values.Where(r => r.FilesReferencing.Count == 0 && r.ProcsReferencing.Count == 0);
+				outputFile.WriteLine($"Items with no references: {string.Join(", ", itemsWithNoRefs)}");
+
 				foreach (var referenceMapEntry in referenceMap) {
 					var entity = referenceMapEntry.Value;
 					outputFile.WriteLine(reportFileSeparator);
-					outputFile.WriteLine($"NAME: {entity.Name}");
+					outputFile.WriteLine($"Name: {entity.Name}");
 					outputFile.WriteLine($"Sql Type: {entity.Type}");
 
-					outputFile.WriteLine($"Files referencing: {string.Join(",", entity.FilesReferencing)}");
-					outputFile.WriteLine($"Stored Procs referencing: {string.Join(",", entity.ProcsReferencing)}");
+					outputFile.WriteLine($"Files referencing: {string.Join(", ", entity.FilesReferencing)}");
+					outputFile.WriteLine($"Stored Procs referencing: {string.Join(", ", entity.ProcsReferencing)}");
 				}
 			}
 

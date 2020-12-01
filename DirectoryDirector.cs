@@ -7,7 +7,7 @@ namespace DbRefFinder {
 	public class DirectoryDirector {
 		public void Scour(string directoryPath, Dictionary<string, ReferenceList> referenceMap) {
 			var directoryFiles = Directory.GetFiles(directoryPath);
-			Console.WriteLine($"Processing: {directoryPath} ({directoryFiles.Length} files)");
+			Console.WriteLine($"Processing: {directoryPath} ({directoryFiles.Length} file(s))");
 
 			foreach (var filePath in directoryFiles) {
 				ScourFile(filePath, referenceMap);
