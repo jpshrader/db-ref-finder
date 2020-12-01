@@ -42,7 +42,7 @@ namespace DbRefFinder {
 			var pathToFile = Path.Combine(Directory.GetCurrentDirectory(), "sql-references.txt");
 
 			using (var outputFile = new StreamWriter(pathToFile, append: false)) {
-				var itemsWithNoRefs = referenceMap.Values.Where(r => r.FilesReferencing.Count == 0 && r.ProcsReferencing.Count == 0);
+				var itemsWithNoRefs = referenceMap.Values.Where(r => r.FilesReferencing.Count == 0 && r.ProcsReferencing.Count == 0).Select(r => r.Name);
 				outputFile.WriteLine($"Items with no references: {string.Join(", ", itemsWithNoRefs)}");
 
 				foreach (var referenceMapEntry in referenceMap) {
