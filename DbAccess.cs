@@ -35,7 +35,7 @@ namespace DbRefFinder {
 		/// <param name="name">Name of table/proc you're checking</param>
 		/// <returns></returns>
 		public IEnumerable<string> FindRefsFromStoredProcs(string name) {
-			var sqlQuery = $@"SELECT DISTINCT(Name) FROM sys.procedures WHERE OBJECT_DEFINITION(OBJECT_ID) LIKE '%{name}%'";
+			var sqlQuery = $@"SELECT DISTINCT(Name) FROM sys.procedures WHERE OBJECT_DEFINITION(OBJECT_ID) LIKE '%{name}%' AND [Name] != '{name}'";
 
 			return Get(sqlQuery);
 		}
