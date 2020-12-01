@@ -6,15 +6,15 @@ namespace DbRefFinder {
 
 		public SqlObjectType Type { get; set; }
 
-		public List<string> FilesReferencing { get; set; }
+		public HashSet<string> FilesReferencing { get; set; }
 
-		public List<string> ProcsReferencing { get; set; }
+		public HashSet<string> ProcsReferencing { get; set; }
 
 		public ReferenceList(string name, SqlObjectType type) {
 			Name = name;
 			Type = type;
-			FilesReferencing = new List<string>();
-			ProcsReferencing = new List<string>();
+			FilesReferencing = new HashSet<string>();
+			ProcsReferencing = new HashSet<string>();
 		}
 	}
 }

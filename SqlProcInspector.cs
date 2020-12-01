@@ -21,7 +21,9 @@ namespace DbRefFinder {
 				}
 
 				var referencingProcs = dbAccess.FindRefsFromStoredProcs(entity);
-				referenceList.ProcsReferencing.AddRange(referencingProcs);
+				foreach(var referencingProc in referencingProcs) {
+					referenceList.ProcsReferencing.Add(referencingProc);
+				}
 			}
 		}
 	}
