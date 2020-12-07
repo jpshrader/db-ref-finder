@@ -1,24 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DbRefFinder {
-	public class DirectoryDirector {
-		public void Scour(string directoryPath, Dictionary<string, ReferenceList> referenceMap) {
+	public static class DirectoryDirector {
+		public static void Scour(string directoryPath, ConcurrentDictionary<string, ReferenceList> referenceMap) {
 			var directoryFiles = Directory.GetFiles(directoryPath);
 			Console.WriteLine($"Processing: {directoryPath} ({directoryFiles.Length} file(s))");
 
-			foreach (var filePath in directoryFiles) {
+			Parallel.ForEach(directoryFiles, filePath => {
 				ScourFile(filePath, referenceMap);
-			}
+			});
 
-			foreach (var directory in Directory.GetDirectories(directoryPath)) {
+			Parallel.ForEach(Directory.GetDirectories(directoryPath), directory => {
 				Scour(directory, referenceMap);
-			}
+			});
 		}
 
-		private void ScourFile(string filePath, Dictionary<string, ReferenceList> referenceMap) {
+		private static void ScourFile(string filePath, ConcurrentDictionary<string, ReferenceList> referenceMap) {
 			string line;
 			var file = new StreamReader(filePath);
 
